@@ -2,9 +2,7 @@ import React from 'react';
 
 const Parrafo = () => {
   return (
-    <div>
-        <p>Mi primer parrafo en react</p>
-    </div>
+        <h1>Mi primer parrafo en react</h1>
   )
 }
 
