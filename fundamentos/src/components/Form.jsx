@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import React, { useEffect } from "react" ;
+import React from "react" ;
 import '../styles/Form.css';
 import { firebase } from '../firebase';
 
@@ -65,8 +65,19 @@ const Form = () => {
       setError("Introduce numero de contacto!");
       return
     }
+  
+    const db = firebase.firestore();
+    const nuevoContacto = {
+        nombreCliente: nombre,
+        apellidoCliente: apellido,
+        residenciaCliente: residencia,
+        empresaCliente: empresa,
+        emailCliente: email,
+        phoneCliente: phone,
+        webSiteCliente: webLink,
+    }
 
-    /*setListaContactos([
+    setListaContactos([
       ...listaContactos,
       {
         id: nanoid(),
@@ -78,18 +89,7 @@ const Form = () => {
         phoneCliente: phone,
         webSiteCliente: webLink,
       },
-    ]);*/
-
-    const db = firebase.firestore();
-    const nuevoContacto = {
-        nombreCliente: nombre,
-        apellidoCliente: apellido,
-        residenciaCliente: residencia,
-        empresaCliente: empresa,
-        emailCliente: email,
-        phoneCliente: phone,
-        webSiteCliente: webLink,
-    }
+    ]);
 
     const data = await db.collection ('agendis').add(nuevoContacto)
 
@@ -211,14 +211,14 @@ return (
           <ul className="list-group">
             {listaContactos.map((item) => (
               <li className="list-group-item" key={item.id}>
-                <spam className="lead">
+                <span className="lead">
                   Nombre: {item.nombreCliente} {item.apellidoCliente} <br />
                   Residencia: {item.residenciaCliente} <br />
                   Empresa: {item.empresaCliente} <br />
                   Email: {item.emailCliente} <br />
                   Phone: {item.phoneCliente} <br />
-                  {item.webSiteCliente} <br />
-                </spam>
+                  Site: {item.webSiteCliente} <br />
+                </span>
                 <button className="btn btn-danger btn-sm float-end mx-2" onClick={ ()=> eliminaritem(item.id) }>
                   Eliminar
                 </button>
