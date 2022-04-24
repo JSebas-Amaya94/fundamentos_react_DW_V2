@@ -1,100 +1,189 @@
 import { nanoid } from "nanoid";
 import React, { useEffect } from "react" ;
+import '../styles/Form.css';
 
 const Form = () => {
-  const [fruta, setFruta] = React.useState("");
-  const [descripcion, setDescripcion] = React.useState("");
-  const [listafrutas, setListaFrutas] = React.useState([]);
+  const [nombre, setNombre] = React.useState("");
+  const [apellido, setApellido] = React.useState("");
+  const [residencia, setResidencia] = React.useState("");
+  const [empresa, setEmpresa] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [webLink,setWebLink] = React.useState ("");
+
+  const [listaContactos, setListaContactos] = React.useState([]);
+
   const [id, setId] = React.useState ('');
   const [modoEdicion, setModoEdicion] = React.useState(false);
   const [error, setError] = React.useState(null);
 
-  const guardarFrutas = (e) => {
+  const addContacto = (e) => {
     e.preventDefault();
 
-    if (!fruta.trim()) {
-      setError("Digite la fruta");
+    if (!nombre.trim()) {
+      setError("Introduce nombre!");
       return;
     }
 
-    if (!descripcion.trim()) {
-      setError("Digite la descripcion");
+    if (!apellido.trim()) {
+      setError("Ingrece apellido!");
       return
     }
 
-    setListaFrutas([
-      ...listafrutas,
+    if (!residencia.trim()) {
+      setError("Ingrece residencia!");
+      return
+    }
+
+     if (!email.trim()) {
+      setError("Introduce email!");
+      return
+    }
+
+    if (!phone.trim()) {
+      setError("Introduce numero de contacto!");
+      return
+    }
+
+    setListaContactos([
+      ...listaContactos,
       {
         id: nanoid(),
-        nombreFruta: fruta,
-        nombreDescripcion: descripcion,
+        nombreCliente: nombre,
+        apellidoCliente: apellido,
+        residenciaCliente: residencia,
+        empresaCliente: empresa,
+        emailCliente: email,
+        phoneCliente: phone,
+        webSiteCliente: webLink,
       },
     ]);
 
     e.target.reset();
-    setFruta("");
-    setDescripcion("");
+    setNombre("");
+    setApellido("");
+    setResidencia("");
+    setEmpresa("");
+    setEmail("");
+    setPhone("");
+    setWebLink("");
+
     setError(null); 
   };
 
 const editar = item => {
-  setFruta(item.nombreFruta);
-  setDescripcion(item.nombreDescripcion);
+  setNombre(item.nombreCliente);
+  setApellido(item.apellidoCliente);
+  setResidencia(item.residenciaCliente);
+  setEmpresa(item.empresaCliente);
+  setEmail(item.emailCliente);
+  setPhone(item.phoneCliente);
+  setWebLink(item.webSiteCliente);
   setModoEdicion(true);
   setId(item.id);
 }
 
-const editarFrutas = e => {
+const editarContactos = e => {
   e.preventDefault();
 
-  if (!fruta.trim()) {
-    setError("Digite la fruta");
+  if (!nombre.trim()) {
+    setError("Introduce nombre!");
     return;
   }
 
-  if (!descripcion.trim()) {
-    setError("Digite la descripcion");
+  if (!apellido.trim()) {
+    setError("Ingrece apellido!");
     return
   }
 
-  const arrayEditado= listafrutas.map(
-    item => item.id ===id ? {id:id,nombreFruta:fruta,nombreDescripcion:descripcion}: item
+  if (!residencia.trim()) {
+    setError("Ingrece residencia!");
+    return
+  }
+
+   if (!email.trim()) {
+    setError("Introduce email!");
+    return
+  }
+
+  if (!phone.trim()) {
+    setError("Introduce numero de contacto!");
+    return
+  }
+
+  const arrayEditado= listaContactos.map(
+    item => item.id ===id ? {
+      id:id,
+      nombreCliente: nombre,
+      apellidoCliente: apellido,
+      residenciaCliente: residencia,
+      empresaCliente: empresa,
+      emailCliente: email,
+      phoneCliente: phone,
+      webSiteCliente: webLink
+    }: item
   )
 
-  setListaFrutas(arrayEditado);
-  setFruta('');
-  setDescripcion('');
+  setListaContactos(arrayEditado);
+  setNombre('');
+  setApellido('');
+  setResidencia('');
+  setEmpresa('');
+  setEmail('');
+  setPhone('');
+  setWebLink('');
+
   setId('');
   setModoEdicion(false);
   setError(null);
 }
 
 const eliminaritem = id => {
-  const aux = listafrutas.filter(item => item.id !== id)
-  setListaFrutas(aux)
+  const aux = listaContactos.filter(item => item.id !== id)
+  setListaContactos(aux)
+  setModoEdicion(false);
+  setNombre('');
+  setApellido('');
+  setResidencia('');
+  setEmpresa('');
+  setEmail('');
+  setPhone('');
+  setWebLink('');
+  setId('');
+  setError(null);
 };
 
 const cancelar = () => {
   setModoEdicion(false);
-  setFruta('');
+  setNombre('');
+  setApellido('');
+  setResidencia('');
+  setEmpresa('');
+  setEmail('');
+  setPhone('');
+  setWebLink('');
   setId('');
-  setDescripcion('');
   setError(null);
 }
 
 return (
     <div>
-      <h1 className="text-center">CRUB</h1>
+      <h1 className="text-center">Agendis</h1>
       <hr />
       <div className="row">
         <div className="col-8">
-          <h4 className="text-center">Listado de frutas</h4>
+          <h4 className="text-center">Contactos</h4>
           <br />
           <ul className="list-group">
-            {listafrutas.map((item) => (
+            {listaContactos.map((item) => (
               <li className="list-group-item" key={item.id}>
                 <spam className="lead">
-                  {item.nombreFruta} <br /> {item.nombreDescripcion}
+                  Nombre: {item.nombreCliente} {item.apellidoCliente} <br />
+                  Residencia: {item.residenciaCliente} <br />
+                  Empresa: {item.empresaCliente} <br />
+                  Email: {item.emailCliente} <br />
+                  Phone: {item.phoneCliente} <br />
+                  {item.webSiteCliente} <br />
                 </spam>
                 <button className="btn btn-danger btn-sm float-end mx-2" onClick={ ()=> eliminaritem(item.id) }>
                   Eliminar
@@ -109,26 +198,66 @@ return (
         <div className="col-4">
           <h4 className="text-center">
             {
-              modoEdicion ? 'Editar fruta' : 'Agregar frutas'
+              modoEdicion ? 'Editar contacto' : 'Nuevo contacto'
             }
           </h4>
-          <form onSubmit={modoEdicion ? editarFrutas: guardarFrutas}>
+          <form onSubmit={modoEdicion ? editarContactos: addContacto}>
             {
               error ? <span className="text-danger">{error}</span> : null
             }
             <input
               className="form-control mb-2"
               type="text"
-              placeholder="Ingrese Su Fruta"
-              onChange={(e) => setFruta(e.target.value)}
-              value={fruta}
+              placeholder="Nombre"
+              onChange={(e) => setNombre(e.target.value)}
+              value={nombre}
             />
             <input
               className="form-control mb-2"
               type="text"
-              placeholder="Ingrese Descripcion"
-              onChange={(e) => setDescripcion(e.target.value)}
-              value={ descripcion}
+              placeholder="Apellido"
+              onChange={(e) => setApellido(e.target.value)}
+              value={apellido}
+            />
+
+            <input
+              className="form-control mb-2"
+              type="text"
+              placeholder="Residencia"
+              onChange={(e) => setResidencia(e.target.value)}
+              value={residencia}
+            />
+
+            <input
+              className="form-control mb-2"
+              type="text"
+              placeholder="Empresa"
+              onChange={(e) => setEmpresa(e.target.value)}
+              value={empresa}
+            />
+
+            <input
+              className="form-control mb-2"
+              type="text"
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+            />
+
+            <input
+              className="form-control mb-2"
+              type="text"
+              placeholder="Numero de contacto"
+              onChange={(e) => setPhone(e.target.value)}
+              value={phone}
+            />
+
+            <input
+              className="form-control mb-2"
+              type="text"
+              placeholder="Sitio Web"
+              onChange={(e) => setWebLink(e.target.value)}
+              value={webLink}
             />
 
             {
@@ -136,7 +265,7 @@ return (
               (
                 <>
                   <button 
-                    className="btn btn-warning btn-block" 
+                    className="btn btn-primary btn-block" 
                     type="submit">
                       Editar
                   </button>
