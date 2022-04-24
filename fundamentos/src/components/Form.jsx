@@ -1,22 +1,24 @@
 import { nanoid } from "nanoid";
-import React from "react";
+import React, { useEffect } from "react" ;
 
 const Form = () => {
   const [fruta, setFruta] = React.useState("");
   const [descripcion, setDescripcion] = React.useState("");
   const [listafrutas, setListaFrutas] = React.useState([]);
   const [id, setId] = React.useState ('');
+  const [modoEdicion, setModoEdicion] = React.useState(false);
+  const [error, setError] = React.useState(null);
 
   const guardarFrutas = (e) => {
     e.preventDefault();
 
     if (!fruta.trim()) {
-      alert("Digite la fruta");
+      setError("Digite la fruta");
       return;
     }
 
     if (!descripcion.trim()) {
-      alert("Digite la descripcion");
+      setError("Digite la descripcion");
       return
     }
 
@@ -32,11 +34,39 @@ const Form = () => {
     e.target.reset();
     setFruta("");
     setDescripcion("");
+    setError(null); 
   };
 
 const editar = item => {
   setFruta(item.nombreFruta);
   setDescripcion(item.nombreDescripcion);
+  setModoEdicion(true);
+  setId(item.id);
+}
+
+const editarFrutas = e => {
+  e.preventDefault();
+
+  if (!fruta.trim()) {
+    setError("Digite la fruta");
+    return;
+  }
+
+  if (!descripcion.trim()) {
+    setError("Digite la descripcion");
+    return
+  }
+
+  const arrayEditado= listafrutas.map(
+    item => item.id ===id ? {id:id,nombreFruta:fruta,nombreDescripcion:descripcion}: item
+  )
+
+  setListaFrutas(arrayEditado);
+  setFruta('');
+  setDescripcion('');
+  setId('');
+  setModoEdicion(false);
+  setError(null);
 }
 
 const eliminaritem = id => {
@@ -44,7 +74,15 @@ const eliminaritem = id => {
   setListaFrutas(aux)
 };
 
-  return (
+const cancelar = () => {
+  setModoEdicion(false);
+  setFruta('');
+  setId('');
+  setDescripcion('');
+  setError(null);
+}
+
+return (
     <div>
       <h1 className="text-center">CRUB</h1>
       <hr />
@@ -69,8 +107,15 @@ const eliminaritem = id => {
           </ul>
         </div>
         <div className="col-4">
-          <h4 className="text-center"></h4>
-          <form onSubmit={guardarFrutas}>
+          <h4 className="text-center">
+            {
+              modoEdicion ? 'Editar fruta' : 'Agregar frutas'
+            }
+          </h4>
+          <form onSubmit={modoEdicion ? editarFrutas: guardarFrutas}>
+            {
+              error ? <span className="text-danger">{error}</span> : null
+            }
             <input
               className="form-control mb-2"
               type="text"
@@ -85,9 +130,29 @@ const eliminaritem = id => {
               onChange={(e) => setDescripcion(e.target.value)}
               value={ descripcion}
             />
-            <button className="btn btn-primary btn-block" type="submit">
+
+            {
+              modoEdicion ?
+              (
+                <>
+                  <button 
+                    className="btn btn-warning btn-block" 
+                    type="submit">
+                      Editar
+                  </button>
+                  <button 
+                    className="btn btn-dark btn-block" 
+                    type="submit"
+                    onClick={() => cancelar()}>
+                     Cancelar
+                  </button>
+                </>
+              )
+              :
+              <button className="btn btn-primary btn-block" type="submit">
               Agregar
-            </button>
+              </button>
+            }
           </form>
         </div>
       </div>
