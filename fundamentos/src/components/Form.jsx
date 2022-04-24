@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import React, { useEffect } from "react" ;
 import '../styles/Form.css';
+import { firebase } from '../firebase';
 
 const Form = () => {
   const [nombre, setNombre] = React.useState("");
@@ -17,7 +18,27 @@ const Form = () => {
   const [modoEdicion, setModoEdicion] = React.useState(false);
   const [error, setError] = React.useState(null);
 
-  const addContacto = (e) => {
+  React.useEffect (()=> {
+    const obtenerDatos = async () =>{
+      try{
+        const db = firebase.firestore();
+        const data = await db.collection('agendis').get();
+        const arrayData = data.docs.map(item => (
+          {
+            id: item.id, ... item.data()
+          }
+        ))
+        setListaContactos(arrayData)
+
+      }catch (error) {
+        console.log(error);
+      }
+    }
+
+    obtenerDatos();
+  })
+
+  const addContacto = async (e) => {
     e.preventDefault();
 
     if (!nombre.trim()) {
@@ -45,7 +66,7 @@ const Form = () => {
       return
     }
 
-    setListaContactos([
+    /*setListaContactos([
       ...listaContactos,
       {
         id: nanoid(),
@@ -57,7 +78,20 @@ const Form = () => {
         phoneCliente: phone,
         webSiteCliente: webLink,
       },
-    ]);
+    ]);*/
+
+    const db = firebase.firestore();
+    const nuevoContacto = {
+        nombreCliente: nombre,
+        apellidoCliente: apellido,
+        residenciaCliente: residencia,
+        empresaCliente: empresa,
+        emailCliente: email,
+        phoneCliente: phone,
+        webSiteCliente: webLink,
+    }
+
+    const data = await db.collection ('agendis').add(nuevoContacto)
 
     e.target.reset();
     setNombre("");
