@@ -1,0 +1,2 @@
+AWS Amplify https://main.dg5cr0xfy180s.amplifyapp.com/
+netlify https://agendis.netlify.app
