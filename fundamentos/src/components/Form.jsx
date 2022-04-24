@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
-import React from "react" ;
-import '../styles/Form.css';
-import { firebase } from '../firebase';
+import React from "react";
+import "../styles/Form.css";
+import { firebase } from "../firebase";
 
 const Form = () => {
   const [nombre, setNombre] = React.useState("");
@@ -10,33 +10,31 @@ const Form = () => {
   const [empresa, setEmpresa] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
-  const [webLink,setWebLink] = React.useState ("");
+  const [webLink, setWebLink] = React.useState("");
 
   const [listaContactos, setListaContactos] = React.useState([]);
 
-  const [id, setId] = React.useState ('');
+  const [id, setId] = React.useState("");
   const [modoEdicion, setModoEdicion] = React.useState(false);
   const [error, setError] = React.useState(null);
 
-  React.useEffect (()=> {
-    const obtenerDatos = async () =>{
-      try{
+  React.useEffect(() => {
+    const obtenerDatos = async () => {
+      try {
         const db = firebase.firestore();
-        const data = await db.collection('agendis').get();
-        const arrayData = data.docs.map(item => (
-          {
-            id: item.id, ... item.data()
-          }
-        ))
-        setListaContactos(arrayData)
-
-      }catch (error) {
+        const data = await db.collection("agendis").get();
+        const arrayData = data.docs.map((item) => ({
+          id: item.id,
+          ...item.data(),
+        }));
+        setListaContactos(arrayData);
+      } catch (error) {
         console.log(error);
       }
-    }
+    };
 
     obtenerDatos();
-  })
+  });
 
   const addContacto = async (e) => {
     e.preventDefault();
@@ -48,26 +46,26 @@ const Form = () => {
 
     if (!apellido.trim()) {
       setError("Ingrece apellido!");
-      return
+      return;
     }
 
     if (!residencia.trim()) {
       setError("Ingrece residencia!");
-      return
+      return;
     }
 
-     if (!email.trim()) {
+    if (!email.trim()) {
       setError("Introduce email!");
-      return
+      return;
     }
 
     if (!phone.trim()) {
       setError("Introduce numero de contacto!");
-      return
+      return;
     }
-  
-    const db = firebase.firestore();
-    const nuevoContacto = {
+    try {
+      const db = firebase.firestore();
+      const nuevoContacto = {
         nombreCliente: nombre,
         apellidoCliente: apellido,
         residenciaCliente: residencia,
@@ -75,12 +73,81 @@ const Form = () => {
         emailCliente: email,
         phoneCliente: phone,
         webSiteCliente: webLink,
+      };
+
+      const data = await db.collection("agendis").add(nuevoContacto);
+
+      setListaContactos([
+        ...listaContactos,
+        {
+          id: nanoid(),
+          nombreCliente: nombre,
+          apellidoCliente: apellido,
+          residenciaCliente: residencia,
+          empresaCliente: empresa,
+          emailCliente: email,
+          phoneCliente: phone,
+          webSiteCliente: webLink,
+        },
+      ]);
+
+      e.target.reset();
+      setNombre("");
+      setApellido("");
+      setResidencia("");
+      setEmpresa("");
+      setEmail("");
+      setPhone("");
+      setWebLink("");
+
+      setError(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const editar = (item) => {
+    setNombre(item.nombreCliente);
+    setApellido(item.apellidoCliente);
+    setResidencia(item.residenciaCliente);
+    setEmpresa(item.empresaCliente);
+    setEmail(item.emailCliente);
+    setPhone(item.phoneCliente);
+    setWebLink(item.webSiteCliente);
+    setModoEdicion(true);
+    setId(item.id);
+  };
+
+  const editarContactos = async (e) => {
+    e.preventDefault();
+
+    if (!nombre.trim()) {
+      setError("Introduce nombre!");
+      return;
     }
 
-    setListaContactos([
-      ...listaContactos,
-      {
-        id: nanoid(),
+    if (!apellido.trim()) {
+      setError("Ingrece apellido!");
+      return;
+    }
+
+    if (!residencia.trim()) {
+      setError("Ingrece residencia!");
+      return;
+    }
+
+    if (!email.trim()) {
+      setError("Introduce email!");
+      return;
+    }
+
+    if (!phone.trim()) {
+      setError("Introduce numero de contacto!");
+      return;
+    }
+    try {
+      const db = firebase.firestore();
+      await db.collection("agendis").doc(id).update({
         nombreCliente: nombre,
         apellidoCliente: apellido,
         residenciaCliente: residencia,
@@ -88,12 +155,49 @@ const Form = () => {
         emailCliente: email,
         phoneCliente: phone,
         webSiteCliente: webLink,
-      },
-    ]);
+      });
+      const arrayEditado = listaContactos.map((item) =>
+        item.id === id
+          ? {
+              id: id,
+              nombreCliente: nombre,
+              apellidoCliente: apellido,
+              residenciaCliente: residencia,
+              empresaCliente: empresa,
+              emailCliente: email,
+              phoneCliente: phone,
+              webSiteCliente: webLink,
+            }
+          : item
+      );
 
-    const data = await db.collection ('agendis').add(nuevoContacto)
+      setListaContactos(arrayEditado);
+      setNombre("");
+      setApellido("");
+      setResidencia("");
+      setEmpresa("");
+      setEmail("");
+      setPhone("");
+      setWebLink("");
 
-    e.target.reset();
+      setId("");
+      setModoEdicion(false);
+      setError(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const eliminaritem = async (id) => {
+    try {
+      const db = firebase.firestore();
+      await db.collection("agendis").doc(id).delete();
+      const aux = listaContactos.filter((item) => item.id !== id);
+      setListaContactos(aux);
+    } catch (error) {
+      console.log(error);
+    }
+    setModoEdicion(false);
     setNombre("");
     setApellido("");
     setResidencia("");
@@ -101,106 +205,24 @@ const Form = () => {
     setEmail("");
     setPhone("");
     setWebLink("");
-
-    setError(null); 
+    setId("");
+    setError(null);
   };
 
-const editar = item => {
-  setNombre(item.nombreCliente);
-  setApellido(item.apellidoCliente);
-  setResidencia(item.residenciaCliente);
-  setEmpresa(item.empresaCliente);
-  setEmail(item.emailCliente);
-  setPhone(item.phoneCliente);
-  setWebLink(item.webSiteCliente);
-  setModoEdicion(true);
-  setId(item.id);
-}
+  const cancelar = () => {
+    setModoEdicion(false);
+    setNombre("");
+    setApellido("");
+    setResidencia("");
+    setEmpresa("");
+    setEmail("");
+    setPhone("");
+    setWebLink("");
+    setId("");
+    setError(null);
+  };
 
-const editarContactos = e => {
-  e.preventDefault();
-
-  if (!nombre.trim()) {
-    setError("Introduce nombre!");
-    return;
-  }
-
-  if (!apellido.trim()) {
-    setError("Ingrece apellido!");
-    return
-  }
-
-  if (!residencia.trim()) {
-    setError("Ingrece residencia!");
-    return
-  }
-
-   if (!email.trim()) {
-    setError("Introduce email!");
-    return
-  }
-
-  if (!phone.trim()) {
-    setError("Introduce numero de contacto!");
-    return
-  }
-
-  const arrayEditado= listaContactos.map(
-    item => item.id ===id ? {
-      id:id,
-      nombreCliente: nombre,
-      apellidoCliente: apellido,
-      residenciaCliente: residencia,
-      empresaCliente: empresa,
-      emailCliente: email,
-      phoneCliente: phone,
-      webSiteCliente: webLink
-    }: item
-  )
-
-  setListaContactos(arrayEditado);
-  setNombre('');
-  setApellido('');
-  setResidencia('');
-  setEmpresa('');
-  setEmail('');
-  setPhone('');
-  setWebLink('');
-
-  setId('');
-  setModoEdicion(false);
-  setError(null);
-}
-
-const eliminaritem = id => {
-  const aux = listaContactos.filter(item => item.id !== id)
-  setListaContactos(aux)
-  setModoEdicion(false);
-  setNombre('');
-  setApellido('');
-  setResidencia('');
-  setEmpresa('');
-  setEmail('');
-  setPhone('');
-  setWebLink('');
-  setId('');
-  setError(null);
-};
-
-const cancelar = () => {
-  setModoEdicion(false);
-  setNombre('');
-  setApellido('');
-  setResidencia('');
-  setEmpresa('');
-  setEmail('');
-  setPhone('');
-  setWebLink('');
-  setId('');
-  setError(null);
-}
-
-return (
+  return (
     <div>
       <h1 className="text-center">Agendis</h1>
       <hr />
@@ -219,10 +241,16 @@ return (
                   Phone: {item.phoneCliente} <br />
                   Site: {item.webSiteCliente} <br />
                 </span>
-                <button className="btn btn-danger btn-sm float-end mx-2" onClick={ ()=> eliminaritem(item.id) }>
+                <button
+                  className="btn btn-danger btn-sm float-end mx-2"
+                  onClick={() => eliminaritem(item.id)}
+                >
                   Eliminar
                 </button>
-                <button className="btn btn-warning btn-sm float-end" onClick={()=>editar(item)}>
+                <button
+                  className="btn btn-warning btn-sm float-end"
+                  onClick={() => editar(item)}
+                >
                   Editar
                 </button>
               </li>
@@ -231,14 +259,10 @@ return (
         </div>
         <div className="col-4">
           <h4 className="text-center">
-            {
-              modoEdicion ? 'Editar contacto' : 'Nuevo contacto'
-            }
+            {modoEdicion ? "Editar contacto" : "Nuevo contacto"}
           </h4>
-          <form onSubmit={modoEdicion ? editarContactos: addContacto}>
-            {
-              error ? <span className="text-danger">{error}</span> : null
-            }
+          <form onSubmit={modoEdicion ? editarContactos : addContacto}>
+            {error ? <span className="text-danger">{error}</span> : null}
             <input
               className="form-control mb-2"
               type="text"
@@ -294,28 +318,24 @@ return (
               value={webLink}
             />
 
-            {
-              modoEdicion ?
-              (
-                <>
-                  <button 
-                    className="btn btn-primary btn-block" 
-                    type="submit">
-                      Editar
-                  </button>
-                  <button 
-                    className="btn btn-dark btn-block" 
-                    type="submit"
-                    onClick={() => cancelar()}>
-                     Cancelar
-                  </button>
-                </>
-              )
-              :
+            {modoEdicion ? (
+              <>
+                <button className="btn btn-primary btn-block" type="submit">
+                  Editar
+                </button>
+                <button
+                  className="btn btn-dark btn-block"
+                  type="submit"
+                  onClick={() => cancelar()}
+                >
+                  Cancelar
+                </button>
+              </>
+            ) : (
               <button className="btn btn-primary btn-block" type="submit">
-              Agregar
+                Agregar
               </button>
-            }
+            )}
           </form>
         </div>
       </div>
