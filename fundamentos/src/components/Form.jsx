@@ -95,8 +95,6 @@ const Form = () => {
         },
       ]);
 
-      window.location.reload(true);
-
       e.target.reset();
       setNombre("");
       setApellido("");
@@ -135,10 +133,6 @@ const Form = () => {
       return;
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> develop
     if (!email.trim()) {
       setError("Introduce email!");
       return;
@@ -231,14 +225,8 @@ const Form = () => {
           <ul className="list-group">
             {listaContactos.map((item) => (
               <li className="list-group-item" key={item.id}>
-<<<<<<< HEAD
-                <div classname="imagenPicsum">
-                  <img src="https://picsum.photos/200/300"/>
-                </div>
-=======
-                <div classname="imacont"><img src="https://picsum.photos/200/300" alt="Image_Ramdom"/></div>
->>>>>>> develop
                 <span className="lead">
+                <img className="imagenlist" src="https://picsum.photos/200" alt="ImagenRandom"/>
                   Nombre: {item.nombreCliente} {item.apellidoCliente} <br />
                   Empresa: {item.empresaCliente} <br />
                   Email: {item.emailCliente} <br />
