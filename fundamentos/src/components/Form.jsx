@@ -17,6 +17,17 @@ const Form = () => {
   const [modoEdicion, setModoEdicion] = React.useState(false);
   const [error, setError] = React.useState(null);
 
+  // const urlimg = 'https://picsum.photos/v2/list?page=1&limit=100';
+  // React.useEffect(() => {
+  //   fetch(urlimg)
+  //   .then(response => response.json())
+  //   .then(data => {
+  //     console.log(data.id);
+  //   })
+  //   .catch(err=>console.log(err))
+  // }, [])
+
+
   React.useEffect(() => {
     const obtenerDatos = async () => {
       try {
@@ -33,7 +44,7 @@ const Form = () => {
     };
 
     obtenerDatos();
-  });
+  },[]);
 
   const addContacto = async (e) => {
     e.preventDefault();
