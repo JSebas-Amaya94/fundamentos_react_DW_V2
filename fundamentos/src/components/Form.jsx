@@ -6,7 +6,6 @@ import { firebase } from "../firebase";
 const Form = () => {
   const [nombre, setNombre] = React.useState("");
   const [apellido, setApellido] = React.useState("");
-  const [residencia, setResidencia] = React.useState("");
   const [empresa, setEmpresa] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
@@ -49,11 +48,6 @@ const Form = () => {
       return;
     }
 
-    if (!residencia.trim()) {
-      setError("Ingrece residencia!");
-      return;
-    }
-
     if (!email.trim()) {
       setError("Introduce email!");
       return;
@@ -68,7 +62,6 @@ const Form = () => {
       const nuevoContacto = {
         nombreCliente: nombre,
         apellidoCliente: apellido,
-        residenciaCliente: residencia,
         empresaCliente: empresa,
         emailCliente: email,
         phoneCliente: phone,
@@ -83,7 +76,6 @@ const Form = () => {
           id: nanoid(),
           nombreCliente: nombre,
           apellidoCliente: apellido,
-          residenciaCliente: residencia,
           empresaCliente: empresa,
           emailCliente: email,
           phoneCliente: phone,
@@ -91,10 +83,11 @@ const Form = () => {
         },
       ]);
 
+      window.location.reload(true);
+
       e.target.reset();
       setNombre("");
       setApellido("");
-      setResidencia("");
       setEmpresa("");
       setEmail("");
       setPhone("");
@@ -109,7 +102,6 @@ const Form = () => {
   const editar = (item) => {
     setNombre(item.nombreCliente);
     setApellido(item.apellidoCliente);
-    setResidencia(item.residenciaCliente);
     setEmpresa(item.empresaCliente);
     setEmail(item.emailCliente);
     setPhone(item.phoneCliente);
@@ -131,10 +123,6 @@ const Form = () => {
       return;
     }
 
-    if (!residencia.trim()) {
-      setError("Ingrece residencia!");
-      return;
-    }
 
     if (!email.trim()) {
       setError("Introduce email!");
@@ -150,7 +138,6 @@ const Form = () => {
       await db.collection("agendis").doc(id).update({
         nombreCliente: nombre,
         apellidoCliente: apellido,
-        residenciaCliente: residencia,
         empresaCliente: empresa,
         emailCliente: email,
         phoneCliente: phone,
@@ -162,7 +149,6 @@ const Form = () => {
               id: id,
               nombreCliente: nombre,
               apellidoCliente: apellido,
-              residenciaCliente: residencia,
               empresaCliente: empresa,
               emailCliente: email,
               phoneCliente: phone,
@@ -170,11 +156,10 @@ const Form = () => {
             }
           : item
       );
-
+      
       setListaContactos(arrayEditado);
       setNombre("");
       setApellido("");
-      setResidencia("");
       setEmpresa("");
       setEmail("");
       setPhone("");
@@ -200,7 +185,6 @@ const Form = () => {
     setModoEdicion(false);
     setNombre("");
     setApellido("");
-    setResidencia("");
     setEmpresa("");
     setEmail("");
     setPhone("");
@@ -213,7 +197,6 @@ const Form = () => {
     setModoEdicion(false);
     setNombre("");
     setApellido("");
-    setResidencia("");
     setEmpresa("");
     setEmail("");
     setPhone("");
@@ -233,9 +216,11 @@ const Form = () => {
           <ul className="list-group">
             {listaContactos.map((item) => (
               <li className="list-group-item" key={item.id}>
+                <div classname="imagenPicsum">
+                  <img src="https://picsum.photos/200/300"/>
+                </div>
                 <span className="lead">
                   Nombre: {item.nombreCliente} {item.apellidoCliente} <br />
-                  Residencia: {item.residenciaCliente} <br />
                   Empresa: {item.empresaCliente} <br />
                   Email: {item.emailCliente} <br />
                   Phone: {item.phoneCliente} <br />
@@ -276,14 +261,6 @@ const Form = () => {
               placeholder="Apellido"
               onChange={(e) => setApellido(e.target.value)}
               value={apellido}
-            />
-
-            <input
-              className="form-control mb-2"
-              type="text"
-              placeholder="Residencia"
-              onChange={(e) => setResidencia(e.target.value)}
-              value={residencia}
             />
 
             <input
