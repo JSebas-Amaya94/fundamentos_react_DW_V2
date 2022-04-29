@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import React from "react";
-import "../styles/Form.css";
+import '../styles/Form.css';
 import { firebase } from "../firebase";
 
 const Form = () => {
@@ -17,11 +17,22 @@ const Form = () => {
   const [modoEdicion, setModoEdicion] = React.useState(false);
   const [error, setError] = React.useState(null);
 
+  // const urlimg = 'https://picsum.photos/v2/list?page=1&limit=100';
+  // React.useEffect(() => {
+  //   fetch(urlimg)
+  //   .then(response => response.json())
+  //   .then(data => {
+  //     console.log(data.id);
+  //   })
+  //   .catch(err=>console.log(err))
+  // }, [])
+
+
   React.useEffect(() => {
     const obtenerDatos = async () => {
       try {
         const db = firebase.firestore();
-        const data = await db.collection("agendis").get();
+        const data = await db.collection("agendisv2").get();
         const arrayData = data.docs.map((item) => ({
           id: item.id,
           ...item.data(),
@@ -33,7 +44,7 @@ const Form = () => {
     };
 
     obtenerDatos();
-  });
+  },[]);
 
   const addContacto = async (e) => {
     e.preventDefault();
@@ -66,9 +77,10 @@ const Form = () => {
         emailCliente: email,
         phoneCliente: phone,
         webSiteCliente: webLink,
+        //imgenCliente:
       };
 
-      const data = await db.collection("agendis").add(nuevoContacto);
+      const data = await db.collection("agendisv2").add(nuevoContacto);
 
       setListaContactos([
         ...listaContactos,
@@ -123,7 +135,10 @@ const Form = () => {
       return;
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> develop
     if (!email.trim()) {
       setError("Introduce email!");
       return;
@@ -135,7 +150,7 @@ const Form = () => {
     }
     try {
       const db = firebase.firestore();
-      await db.collection("agendis").doc(id).update({
+      await db.collection("agendisv2").doc(id).update({
         nombreCliente: nombre,
         apellidoCliente: apellido,
         empresaCliente: empresa,
@@ -176,7 +191,7 @@ const Form = () => {
   const eliminaritem = async (id) => {
     try {
       const db = firebase.firestore();
-      await db.collection("agendis").doc(id).delete();
+      await db.collection("agendisv2").doc(id).delete();
       const aux = listaContactos.filter((item) => item.id !== id);
       setListaContactos(aux);
     } catch (error) {
@@ -216,9 +231,13 @@ const Form = () => {
           <ul className="list-group">
             {listaContactos.map((item) => (
               <li className="list-group-item" key={item.id}>
+<<<<<<< HEAD
                 <div classname="imagenPicsum">
                   <img src="https://picsum.photos/200/300"/>
                 </div>
+=======
+                <div classname="imacont"><img src="https://picsum.photos/200/300" alt="Image_Ramdom"/></div>
+>>>>>>> develop
                 <span className="lead">
                   Nombre: {item.nombreCliente} {item.apellidoCliente} <br />
                   Empresa: {item.empresaCliente} <br />

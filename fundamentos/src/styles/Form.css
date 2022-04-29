@@ -1,5 +1,14 @@
+<<<<<<< HEAD
 .imagenPicsum {
     display: flex;
     position: center
     
 }
+=======
+.imacont {
+    display: flex;
+    justify-content: center;
+    background-color: aqua;
+    
+}
+>>>>>>> develop
