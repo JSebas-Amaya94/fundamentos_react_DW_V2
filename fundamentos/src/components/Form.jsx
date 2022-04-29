@@ -1,12 +1,11 @@
 import { nanoid } from "nanoid";
 import React from "react";
-import "../styles/Form.css";
+import '../styles/Form.css';
 import { firebase } from "../firebase";
 
 const Form = () => {
   const [nombre, setNombre] = React.useState("");
   const [apellido, setApellido] = React.useState("");
-  const [residencia, setResidencia] = React.useState("");
   const [empresa, setEmpresa] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
@@ -22,7 +21,7 @@ const Form = () => {
     const obtenerDatos = async () => {
       try {
         const db = firebase.firestore();
-        const data = await db.collection("agendis").get();
+        const data = await db.collection("agendisv2").get();
         const arrayData = data.docs.map((item) => ({
           id: item.id,
           ...item.data(),
@@ -49,11 +48,6 @@ const Form = () => {
       return;
     }
 
-    if (!residencia.trim()) {
-      setError("Ingrece residencia!");
-      return;
-    }
-
     if (!email.trim()) {
       setError("Introduce email!");
       return;
@@ -68,14 +62,14 @@ const Form = () => {
       const nuevoContacto = {
         nombreCliente: nombre,
         apellidoCliente: apellido,
-        residenciaCliente: residencia,
         empresaCliente: empresa,
         emailCliente: email,
         phoneCliente: phone,
         webSiteCliente: webLink,
+        //imgenCliente:
       };
 
-      const data = await db.collection("agendis").add(nuevoContacto);
+      const data = await db.collection("agendisv2").add(nuevoContacto);
 
       setListaContactos([
         ...listaContactos,
@@ -83,7 +77,6 @@ const Form = () => {
           id: nanoid(),
           nombreCliente: nombre,
           apellidoCliente: apellido,
-          residenciaCliente: residencia,
           empresaCliente: empresa,
           emailCliente: email,
           phoneCliente: phone,
@@ -94,7 +87,6 @@ const Form = () => {
       e.target.reset();
       setNombre("");
       setApellido("");
-      setResidencia("");
       setEmpresa("");
       setEmail("");
       setPhone("");
@@ -109,7 +101,6 @@ const Form = () => {
   const editar = (item) => {
     setNombre(item.nombreCliente);
     setApellido(item.apellidoCliente);
-    setResidencia(item.residenciaCliente);
     setEmpresa(item.empresaCliente);
     setEmail(item.emailCliente);
     setPhone(item.phoneCliente);
@@ -131,11 +122,6 @@ const Form = () => {
       return;
     }
 
-    if (!residencia.trim()) {
-      setError("Ingrece residencia!");
-      return;
-    }
-
     if (!email.trim()) {
       setError("Introduce email!");
       return;
@@ -147,10 +133,9 @@ const Form = () => {
     }
     try {
       const db = firebase.firestore();
-      await db.collection("agendis").doc(id).update({
+      await db.collection("agendisv2").doc(id).update({
         nombreCliente: nombre,
         apellidoCliente: apellido,
-        residenciaCliente: residencia,
         empresaCliente: empresa,
         emailCliente: email,
         phoneCliente: phone,
@@ -162,7 +147,6 @@ const Form = () => {
               id: id,
               nombreCliente: nombre,
               apellidoCliente: apellido,
-              residenciaCliente: residencia,
               empresaCliente: empresa,
               emailCliente: email,
               phoneCliente: phone,
@@ -174,7 +158,6 @@ const Form = () => {
       setListaContactos(arrayEditado);
       setNombre("");
       setApellido("");
-      setResidencia("");
       setEmpresa("");
       setEmail("");
       setPhone("");
@@ -191,7 +174,7 @@ const Form = () => {
   const eliminaritem = async (id) => {
     try {
       const db = firebase.firestore();
-      await db.collection("agendis").doc(id).delete();
+      await db.collection("agendisv2").doc(id).delete();
       const aux = listaContactos.filter((item) => item.id !== id);
       setListaContactos(aux);
     } catch (error) {
@@ -200,7 +183,6 @@ const Form = () => {
     setModoEdicion(false);
     setNombre("");
     setApellido("");
-    setResidencia("");
     setEmpresa("");
     setEmail("");
     setPhone("");
@@ -213,7 +195,6 @@ const Form = () => {
     setModoEdicion(false);
     setNombre("");
     setApellido("");
-    setResidencia("");
     setEmpresa("");
     setEmail("");
     setPhone("");
@@ -233,9 +214,9 @@ const Form = () => {
           <ul className="list-group">
             {listaContactos.map((item) => (
               <li className="list-group-item" key={item.id}>
+                <div classname="imacont"><img src="https://picsum.photos/200/300" alt="Image_Ramdom"/></div>
                 <span className="lead">
                   Nombre: {item.nombreCliente} {item.apellidoCliente} <br />
-                  Residencia: {item.residenciaCliente} <br />
                   Empresa: {item.empresaCliente} <br />
                   Email: {item.emailCliente} <br />
                   Phone: {item.phoneCliente} <br />
@@ -276,14 +257,6 @@ const Form = () => {
               placeholder="Apellido"
               onChange={(e) => setApellido(e.target.value)}
               value={apellido}
-            />
-
-            <input
-              className="form-control mb-2"
-              type="text"
-              placeholder="Residencia"
-              onChange={(e) => setResidencia(e.target.value)}
-              value={residencia}
             />
 
             <input
