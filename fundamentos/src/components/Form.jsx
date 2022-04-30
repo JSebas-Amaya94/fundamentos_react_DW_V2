@@ -10,6 +10,7 @@ const Form = () => {
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [webLink, setWebLink] = React.useState("");
+  // const [imagePicsum, setImagePicsum] = React.useState("");
 
   const [listaContactos, setListaContactos] = React.useState([]);
 
@@ -17,16 +18,15 @@ const Form = () => {
   const [modoEdicion, setModoEdicion] = React.useState(false);
   const [error, setError] = React.useState(null);
 
-  // const urlimg = 'https://picsum.photos/v2/list?page=1&limit=100';
-  // React.useEffect(() => {
-  //   fetch(urlimg)
-  //   .then(response => response.json())
-  //   .then(data => {
-  //     console.log(data.id);
-  //   })
-  //   .catch(err=>console.log(err))
-  // }, [])
-
+  // const urlimg = 'https://picsum.photos/v2/list?page=2&limit=100';
+  // React.useEffect( () => {
+  //    fetch(urlimg)
+  //    .then(response => response.json())
+  //    .then(data => {
+  //      setImagePicsum(data.id)
+  //     })
+     
+  //   },[])
 
   React.useEffect(() => {
     const obtenerDatos = async () => {
@@ -226,7 +226,7 @@ const Form = () => {
             {listaContactos.map((item) => (
               <li className="list-group-item" key={item.id}>
                 <span className="lead">
-                <img className="imagenlist" src="https://picsum.photos/200" alt="ImagenRandom"/>
+                  <img className="imagenlist" src="https://picsum.photos/200" alt="ImagenRandom"/>
                   Nombre: {item.nombreCliente} {item.apellidoCliente} <br />
                   Empresa: {item.empresaCliente} <br />
                   Email: {item.emailCliente} <br />
