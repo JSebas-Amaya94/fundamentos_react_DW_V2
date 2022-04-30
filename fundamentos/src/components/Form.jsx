@@ -80,7 +80,7 @@ const Form = () => {
         //imgenCliente:
       };
 
-      const data = await db.collection("agendisv2").add(nuevoContacto);
+      await db.collection("agendisv2").add(nuevoContacto);
 
       setListaContactos([
         ...listaContactos,
